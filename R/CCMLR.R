@@ -60,7 +60,7 @@ plotQuantitiesInTonnes <- function(species=c(), start=1946, end=2016, file="qryT
 		 	      ret.push(tuples[i][0].replace('.', ' ') + ':' + tuples[i][1]);
 		     }
 		     return ret.join('<br />'); } !#")
-  m1$save('output2.html', standalone = TRUE)
+  m1$save('output.html', standalone = TRUE)
 }
 
 plotQuantitiesInTonnesByCountry <- function(start=1946, end=2016, file="qryTable03_1.csv", chart="Bar") {
@@ -75,7 +75,7 @@ plotQuantitiesInTonnesByCountry <- function(start=1946, end=2016, file="qryTable
   aggr04 <- transform(aggr03, CatchWeight.t. = as.numeric(x))
   aggr04$x <- NULL
   m1 <- mPlot(x = "Country", y = "CatchWeight.t.", type = chart, data = aggr04, stacked = "TRUE", xLabelAngle = 85)
-  m1$save('output3.html', standalone = TRUE)
+  m1$save('output.html', standalone = TRUE)
 }
 
 getSpecies <- function(file="qryTable02.csv") {
