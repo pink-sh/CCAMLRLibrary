@@ -61,6 +61,7 @@ plotQuantitiesInTonnes <- function(species=c(), start=1946, end=2016, file="qryT
 		     }
 		     return ret.join('<br />'); } !#")
   m1$save('output.html', standalone = TRUE)
+  return (OUT)
 }
 
 plotQuantitiesInTonnesByCountry <- function(start=1946, end=2016, file="qryTable03_1.csv", chart="Bar") {
