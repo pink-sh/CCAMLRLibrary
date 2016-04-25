@@ -1,6 +1,7 @@
 plotQuantitiesInTonnes <- function(species=c(), start=1946, end=2016, file="qryTable02.csv", chart="Bar") {
   library(rCharts)
   library(dplyr)
+  library(jsonlite)
   myData <- read.csv(file)
   if (length(species > 0)) {
     reduced <- filter(myData, SpeciesCode %in% species)
@@ -61,7 +62,7 @@ plotQuantitiesInTonnes <- function(species=c(), start=1946, end=2016, file="qryT
 		     }
 		     return ret.join('<br />'); } !#")
   m1$save('output.html', standalone = TRUE)
-  return (OUT)
+  return (toJSON(OUT))
 }
 
 plotQuantitiesInTonnesByCountry <- function(start=1946, end=2016, file="qryTable03_1.csv", chart="Bar") {
