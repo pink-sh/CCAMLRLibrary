@@ -77,3 +77,13 @@ plotQuantitiesInTonnesByCountry <- function(start=1946, end=2016, file="qryTable
   m1 <- mPlot(x = "Country", y = "CatchWeight.t.", type = chart, data = aggr04, stacked = "TRUE", xLabelAngle = 85)
   m1$save('output3.html', standalone = TRUE)
 }
+
+getSpecies <- function(file="qryTable02.csv") {
+  library(jsonlite)
+  library(dplyr)
+  df <- read.csv(file)
+  plyed <- ddply(df, c("ScientificName","SpeciesCode"), head, 1)
+  ret <- data.frame("NAME" = plyed$ScientificName, "ALPHA" = plyed$SpeciesCode)
+  ret <- ret[!apply(ret, 1, function(x) any(x=="")),]
+  return (toJSON(ret))
+}
