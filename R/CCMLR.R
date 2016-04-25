@@ -68,6 +68,7 @@ plotQuantitiesInTonnes <- function(species=c(), start=1946, end=2016, file="qryT
 plotQuantitiesInTonnesByCountry <- function(start=1946, end=2016, file="qryTable03_1.csv", chart="Bar") {
   library(rCharts)
   library(dplyr)
+  library(jsonlite)
   myData <- read.csv(file)
   aggr0 <- aggregate(myData$CatchWeight.t., by=list(SeasonYear=myData$SeasonYear, Country=myData$Country), FUN=sum)
   aggr01 <- transform(aggr0, SeasonYear = as.character(SeasonYear), CatchWeight.t. = as.numeric(x))
@@ -78,6 +79,7 @@ plotQuantitiesInTonnesByCountry <- function(start=1946, end=2016, file="qryTable
   aggr04$x <- NULL
   m1 <- mPlot(x = "Country", y = "CatchWeight.t.", type = chart, data = aggr04, stacked = "TRUE", xLabelAngle = 85)
   m1$save('output.html', standalone = TRUE)
+  return (toJSON(aggr04))
 }
 
 getSpecies <- function(file="qryTable02.csv") {
