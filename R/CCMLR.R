@@ -80,7 +80,7 @@ plotQuantitiesInTonnesByCountry <- function(start=1946, end=2016, file="qryTable
 
 getSpecies <- function(file="qryTable02.csv") {
   library(jsonlite)
-  library(dplyr)
+  library(plyr)
   df <- read.csv(file)
   plyed <- ddply(df, c("ScientificName","SpeciesCode"), head, 1)
   ret <- data.frame("NAME" = plyed$ScientificName, "ALPHA" = plyed$SpeciesCode)
