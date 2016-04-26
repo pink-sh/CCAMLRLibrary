@@ -85,6 +85,7 @@ plotQuantitiesInTonnesByCountry <- function(start=1946, end=2016, file="qryTable
 plotCatchEfforts <- function(start=1946, end=2016, file="QueryEffortsCatch.csv", chart="Bar") {
   library(rCharts)
   library(dplyr)
+  library(jsonlite)
   myData <- read.csv(file)
   aggr0 <- filter(myData, SeasonYear >= start, SeasonYear <= end)
   aggr01 <- transform(aggr0, mean = CatchWeight/FishingHours)
