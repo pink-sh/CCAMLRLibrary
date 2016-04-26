@@ -82,6 +82,17 @@ plotQuantitiesInTonnesByCountry <- function(start=1946, end=2016, file="qryTable
   return (toJSON(aggr04))
 }
 
+plotCatchEfforts <- function(start=1946, end=2016, file="QueryEffortsCatch.csv", chart="Bar") {
+  library(rCharts)
+  library(dplyr)
+  myData <- read.csv(file)
+  aggr0 <- filter(myData, SeasonYear >= start, SeasonYear <= end)
+  aggr01 <- transform(aggr0, mean = CatchWeight/FishingHours)
+  m1 <- mPlot(x = "SeasonYear", y = "mean", type = chart, data = aggr01, stacked = "TRUE", xLabelAngle = 85)
+  m1$save('output.html', standalone = TRUE)
+  return (toJSON(aggaggr01r04))
+}
+
 getSpecies <- function(file="qryTable02.csv") {
   library(jsonlite)
   library(plyr)
