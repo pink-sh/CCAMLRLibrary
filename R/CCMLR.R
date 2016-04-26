@@ -41,7 +41,14 @@ plotQuantitiesInTonnes <- function(species=c(), start=1946, end=2016, file="qryT
     OUT[[scientificName]] <- vector
   }
   OUT <- transform(OUT, SeasonYear = as.character(SeasonYear))
-  m1 <- mPlot(x = "SeasonYear", y = names(OUT), type = chart, data = OUT, stacked = "TRUE")
+  namesOut <- c()
+  for (name in names(OUT)) {
+    if (name != 'SeasonYear') {
+      OUT[, name] = as.double(OUT[, name])
+      namesOut <- c(namesOut, name)
+    }
+  }
+  m1 <- mPlot(x = "SeasonYear", y = namesOut, type = chart, data = OUT, stacked = "TRUE")
   m1$set(hoverCallback = "#! function(index, options, content) {
          var row = options.data[index];
          var tuples = [];
