@@ -1,3 +1,5 @@
+vector.is.empty <- function(x) return(length(x) ==0 )
+
 plotQuantitiesInTonnes <- function(species=c(), start=1946, end=2016, file="qryTable02.csv", chart="Bar") {
   library(rCharts)
   library(dplyr)
@@ -110,4 +112,48 @@ getSpecies <- function(file="qryTable02.csv") {
   ret <- data.frame("NAME" = plyed$ScientificName, "ALPHA" = plyed$SpeciesCode)
   ret <- ret[!apply(ret, 1, function(x) any(x=="")),]
   return (toJSON(ret))
+}
+
+getUnique <- function(file="qryTable12.csv", colVal = "", colKey = "") {
+  library(jsonlite)
+  library(plyr)
+  df <- read.csv(file)
+  plyed <- ddply(df, c(colVal,colKey), head, 1)
+  #ret <- data.frame("VALUE" = plyed$ScientificName, "KEY" = plyed$SpeciesCode)
+  ret <- data.frame("VALUE" = plyed[colVal], "KEY" = plyed[colKey])
+  ret <- ret[!apply(ret, 1, function(x) any(x=="")),]
+  ret[with(ret, order(ret[,1])), ]
+  print (ret)
+  return (toJSON(ret))
+}
+
+catchByFishingMethods <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), file="qryTable12.csv", chart="Bar", removeZero=FALSE) {
+  library(rCharts)
+  library(dplyr)
+  library(jsonlite)
+  myData <- read.csv(file)
+  aggr0 <- filter(myData, SeasonYear >= start, SeasonYear <= end)
+  if (!vector.is.empty(species)) {
+    aggr0 <- filter(aggr0, SpeciesCode %in% species)
+  }
+  if (!vector.is.empty(gear)) {
+    aggr0 <- filter(aggr0, GearCode %in% gear)
+  }
+  if (!vector.is.empty(asd)) {
+    aggr0 <- filter(aggr0, ASD %in% asd)
+  }
+  aggr01 <- transform(aggr0, tonnes = as.numeric(CatchWeight.t.))
+  aggr01[,10] <- as.numeric(as.character( aggr01[,10] ))
+  aggr01 <- aggregate(aggr01$CatchWeight.t., by=list(aggr01$SpeciesCode), FUN=sum, na.rm=TRUE)
+  aggr01 <- transform(aggr01, Tonnes = as.numeric(x))
+  aggr01 <- transform(aggr01, SpeciesCode = as.character(Group.1))
+  aggr01$Group.1 = NULL
+  aggr01$x = NULL
+  if (removeZero) {
+    aggr01 <- aggr01[apply(aggr01["Tonnes"],1,function(z) !any(z==0)),]
+  }
+  json <- toJSON(aggr01)
+  m1 <- mPlot(x = "SpeciesCode", y = "Tonnes", type = chart, data = aggr01, stacked = "TRUE", xLabelAngle = 65)
+  m1$save('/tmp/output.html', standalone = TRUE)
+  return (json)
 }
