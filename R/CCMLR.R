@@ -119,11 +119,9 @@ getUnique <- function(file="qryTable12.csv", colVal = "", colKey = "") {
   library(plyr)
   df <- read.csv(file)
   plyed <- ddply(df, c(colVal,colKey), head, 1)
-  #ret <- data.frame("VALUE" = plyed$ScientificName, "KEY" = plyed$SpeciesCode)
   ret <- data.frame("VALUE" = plyed[colVal], "KEY" = plyed[colKey])
   ret <- ret[!apply(ret, 1, function(x) any(x=="")),]
   ret[with(ret, order(ret[,1])), ]
-  print (ret)
   return (toJSON(ret))
 }
 
@@ -154,6 +152,6 @@ catchByFishingMethods <- function(start=1946, end=2016, species=c(), gear=c(), a
   }
   json <- toJSON(aggr01)
   m1 <- mPlot(x = "SpeciesCode", y = "Tonnes", type = chart, data = aggr01, stacked = "TRUE", xLabelAngle = 65)
-  m1$save('/tmp/output.html', standalone = TRUE)
+  m1$save('output.html', standalone = TRUE)
   return (json)
 }
