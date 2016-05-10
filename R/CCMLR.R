@@ -172,14 +172,12 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), mo
   if (!vector.is.empty(asd)) {
     aggr0 <- filter(aggr0, ASD %in% asd)
   }
-  if (length(species > 0)) {
-    aggr0 <- filter(aggr0, TargetSpeciesCode %in% species)
-  } else {
-    tspecies <- unique(aggr0$TargetSpeciesCode)
-    for (sp in tspecies) {
-      if (!is.null(sp) && sp != "NULL") {
-        species <- c(species, sp)
-      }
+  tspecies <- unique(aggr01$SpeciesCode)
+  cspecies <- c()
+  for (sp in tspecies) {
+    print(sp)
+    if (!is.null(sp) && sp != "NULL") {
+      cspecies <- c(cspecies, sp)
     }
   }
   aggr01 <- aggregate(aggr0$FishingDays, by=list(aggr0$SeasonYear, aggr0$MonthNm, aggr0$ScientificName, aggr0$TargetSpeciesCode), FUN=sum, na.rm=TRUE)
@@ -212,7 +210,7 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), mo
     aggr02[[SpeciesCode]] <<- as.numeric(unlist(lista));
   })
   json <- toJSON(aggr02)
-  aggr03 <- setDT(aggr02)[, lapply(.SD, sum), by=.(Year, Month, monthNum), .SDcols=species]
+  aggr03 <- setDT(aggr02)[, lapply(.SD, sum), by=.(Year, Month, monthNum), .SDcols=cspecies]
   aggr03$out <- paste(aggr03$Year, aggr03$monthNum, sep="/")
 
   m1 <- mPlot(x = c("out"), y = species, type = chart, data = aggr03, stacked = "TRUE", xLabelAngle = 65)
