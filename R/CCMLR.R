@@ -1,4 +1,3 @@
-@import data.table
 vector.is.empty <- function(x) return(length(x) ==0 )
 
 plotQuantitiesInTonnes <- function(species=c(), start=1946, end=2016, file="qryTable02.csv", chart="Bar") {
