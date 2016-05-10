@@ -155,3 +155,71 @@ catchByFishingMethods <- function(start=1946, end=2016, species=c(), gear=c(), a
   m1$save('output.html', standalone = TRUE)
   return (json)
 }
+
+FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), months=c(), file="qryTable11_5.csv", chart="Bar", removeZero=FALSE) {
+  library(rCharts)
+  library(dplyr)
+  library(jsonlite)
+  library(plyr)
+  library(data.table)
+
+  myData <- read.csv(file)
+  aggr0 <- filter(myData, SeasonYear >= start, SeasonYear <= end)
+  if (length(species > 0)) {
+    aggr0 <- filter(aggr0, TargetSpeciesCode %in% species)
+  } else {
+    tspecies <- unique(aggr0$TargetSpeciesCode)
+    for (sp in tspecies) {
+      if (!is.null(sp) && sp != "NULL") {
+        species <- c(species, sp)
+      }
+    }
+  }
+  if (!vector.is.empty(months)) {
+    aggr0 <- filter(aggr0, MonthNm %in% months)
+  }
+  if (!vector.is.empty(gear)) {
+    aggr0 <- filter(aggr0, GearCode %in% gear)
+  }
+  if (!vector.is.empty(asd)) {
+    aggr0 <- filter(aggr0, ASD %in% asd)
+  }
+  aggr01 <- aggregate(aggr0$FishingDays, by=list(aggr0$SeasonYear, aggr0$MonthNm, aggr0$ScientificName, aggr0$TargetSpeciesCode), FUN=sum, na.rm=TRUE)
+  aggr01 <- transform(aggr01, Year = as.character(Group.1))
+  aggr01 <- transform(aggr01, Month = as.character(Group.2))
+  aggr01 <- transform(aggr01, ScientificName = as.character(Group.3))
+  aggr01 <- transform(aggr01, SpeciesCode = as.character(Group.4))
+  aggr01 <- transform(aggr01, FishingDays = as.numeric(x))
+  aggr01$Group.1 = NULL
+  aggr01$Group.2 = NULL
+  aggr01$Group.3 = NULL
+  aggr01$Group.4 = NULL
+  aggr01$x = NULL
+  aggr01$monthNum <- match(aggr01$Month, month.name)
+  aggr01 <- aggr01[apply(aggr01["monthNum"],1,function(z) !any(is.na(z))),]
+  aggr01 <- aggr01[ order(aggr01$Year, aggr01$monthNum), ]
+
+  aggr02 <- aggr01
+  apply(aggr02, 1, function(row1) {
+    ScientificName <- row1['ScientificName'];
+    SpeciesCode <- row1['SpeciesCode'];
+    lista <- c()
+    apply(aggr02, 1, function(row2) {
+      if (SpeciesCode == row2['SpeciesCode']) {
+        lista <<- c(lista, row2['FishingDays'])
+      } else {
+        lista <<- c(lista, 0)
+      }
+    })
+    aggr02[[SpeciesCode]] <<- as.numeric(unlist(lista));
+  })
+  json <- toJSON(aggr02)
+
+  aggr03 <- setDT(aggr02)[, lapply(.SD, sum), by=.(Year, Month, monthNum), .SDcols=species]
+  aggr03$out <- paste(aggr03$Year, aggr03$monthNum, sep="/")
+
+  m1 <- mPlot(x = c("out"), y = species, type = chart, data = aggr03, stacked = "TRUE", xLabelAngle = 65)
+  m1$save('output.html', standalone = TRUE)
+
+  return (json)
+}
