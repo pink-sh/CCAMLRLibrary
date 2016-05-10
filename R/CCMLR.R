@@ -157,7 +157,6 @@ catchByFishingMethods <- function(start=1946, end=2016, species=c(), gear=c(), a
 }
 
 FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), months=c(), file="qryTable11_5.csv", chart="Bar", removeZero=FALSE) {
-  library(data.table)
   library(rCharts)
   library(dplyr)
   library(jsonlite)
