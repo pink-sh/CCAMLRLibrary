@@ -163,6 +163,15 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), mo
 
   myData <- read.csv(file)
   aggr0 <- filter(myData, SeasonYear >= start, SeasonYear <= end)
+  if (!vector.is.empty(months)) {
+    aggr0 <- filter(aggr0, MonthNm %in% months)
+  }
+  if (!vector.is.empty(gear)) {
+    aggr0 <- filter(aggr0, GearCode %in% gear)
+  }
+  if (!vector.is.empty(asd)) {
+    aggr0 <- filter(aggr0, ASD %in% asd)
+  }
   if (length(species > 0)) {
     aggr0 <- filter(aggr0, TargetSpeciesCode %in% species)
   } else {
@@ -172,15 +181,6 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), mo
         species <- c(species, sp)
       }
     }
-  }
-  if (!vector.is.empty(months)) {
-    aggr0 <- filter(aggr0, MonthNm %in% months)
-  }
-  if (!vector.is.empty(gear)) {
-    aggr0 <- filter(aggr0, GearCode %in% gear)
-  }
-  if (!vector.is.empty(asd)) {
-    aggr0 <- filter(aggr0, ASD %in% asd)
   }
   aggr01 <- aggregate(aggr0$FishingDays, by=list(aggr0$SeasonYear, aggr0$MonthNm, aggr0$ScientificName, aggr0$TargetSpeciesCode), FUN=sum, na.rm=TRUE)
   aggr01 <- transform(aggr01, Year = as.character(Group.1))
