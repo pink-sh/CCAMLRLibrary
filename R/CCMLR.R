@@ -156,7 +156,7 @@ catchByFishingMethods <- function(start=1946, end=2016, species=c(), gear=c(), a
   return (json)
 }
 
-FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), months=c(), file="qryTable11_5.csv", chart="Bar", removeZero=FALSE) {
+FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), area=c(), months=c(), file="qryTable11_5.csv", chart="Bar", removeZero=FALSE) {
   library(rCharts)
   library(dplyr)
   library(jsonlite)
@@ -171,6 +171,9 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), mo
   }
   if (!vector.is.empty(asd)) {
     aggr0 <- filter(aggr0, ASD %in% asd)
+  }
+  if (!vector.is.empty(area)) {
+    aggr0 <- filter(aggr0, Area %in% area)
   }
   
   aggr01 <- aggregate(aggr0$FishingDays, by=list(aggr0$SeasonYear, aggr0$MonthNm, aggr0$ScientificName, aggr0$TargetSpeciesCode), FUN=sum, na.rm=TRUE)
