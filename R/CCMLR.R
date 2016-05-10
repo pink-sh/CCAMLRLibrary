@@ -213,6 +213,7 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), mo
     aggr02[[SpeciesCode]] <<- as.numeric(unlist(lista));
   })
   json <- toJSON(aggr02)
+  print(aggr02)
   aggr03 <- setDT(aggr02)[, lapply(.SD, sum), by=.(monthNum), .SDcols=c("KRI")]
   aggr03$out <- paste(aggr03$Year, aggr03$monthNum, sep="/")
 
