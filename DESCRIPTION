@@ -1,6 +1,7 @@
 Package: CCAMLRLibrary
 Type: Package
 Imports: data.table
+Depends: R (>= 3.1.1), data.table
 Title: Utility for CCAMLR Html5 Plotting
 Version: 0.4.0
 Author: Enrico Anello
