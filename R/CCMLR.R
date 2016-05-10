@@ -172,14 +172,7 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), mo
   if (!vector.is.empty(asd)) {
     aggr0 <- filter(aggr0, ASD %in% asd)
   }
-  tspecies <- unique(aggr01$SpeciesCode)
-  cspecies <- c()
-  for (sp in tspecies) {
-    print(sp)
-    if (!is.null(sp) && sp != "NULL") {
-      cspecies <- c(cspecies, sp)
-    }
-  }
+  
   aggr01 <- aggregate(aggr0$FishingDays, by=list(aggr0$SeasonYear, aggr0$MonthNm, aggr0$ScientificName, aggr0$TargetSpeciesCode), FUN=sum, na.rm=TRUE)
   aggr01 <- transform(aggr01, Year = as.character(Group.1))
   aggr01 <- transform(aggr01, Month = as.character(Group.2))
@@ -194,7 +187,14 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), mo
   aggr01$monthNum <- match(aggr01$Month, month.name)
   aggr01 <- aggr01[apply(aggr01["monthNum"],1,function(z) !any(is.na(z))),]
   aggr01 <- aggr01[ order(aggr01$Year, aggr01$monthNum), ]
-
+  tspecies <- unique(aggr01$SpeciesCode)
+  cspecies <- c()
+  for (sp in tspecies) {
+    print(sp)
+    if (!is.null(sp) && sp != "NULL") {
+      cspecies <- c(cspecies, sp)
+    }
+  }
   aggr02 <- aggr01
   apply(aggr02, 1, function(row1) {
     ScientificName <- row1['ScientificName'];
