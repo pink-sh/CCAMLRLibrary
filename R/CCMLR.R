@@ -165,6 +165,9 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), ar
 
   myData <- read.csv(file)
   aggr0 <- filter(myData, SeasonYear >= start, SeasonYear <= end)
+  if (!vector.is.empty(species)) {
+    aggr0 <- filter(aggr0, TargetSpeciesCode %in% species)
+  }
   if (!vector.is.empty(months)) {
     aggr0 <- filter(aggr0, MonthNm %in% months)
   }
