@@ -100,7 +100,7 @@ plotCatchEfforts <- function(start=1946, end=2016, file="QueryEffortsCatch.csv",
   aggr01 <- transform(aggr0, Mean = CatchWeight/FishingHours)
   m1 <- mPlot(x = "SeasonYear", y = "Mean", type = chart, data = aggr01, stacked = "TRUE", xLabelAngle = 85)
   m1$save('output.html', standalone = TRUE)
-  json <- toJSON(aggr01, na = c("NULL", "string"), pretty = FALSE)
+  json <- toJSON(aggr01, na = "null", pretty = FALSE)
   return (json)
 }
 
