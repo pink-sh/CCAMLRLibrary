@@ -109,7 +109,8 @@ getSpecies <- function(file="qryTable02.csv") {
   library(plyr)
   df <- read.csv(file)
   plyed <- ddply(df, c("ScientificName","SpeciesCode"), head, 1)
-  ret <- data.frame("NAME" = plyed$ScientificName, "ALPHA" = plyed$SpeciesCode)
+  #ret <- data.frame("NAME" = plyed$ScientificName, "ALPHA" = plyed$SpeciesCode)
+  ret <- data.frame("id" = plyed$SpeciesCode, "name" = plyed$ScientificName)
   ret <- ret[!apply(ret, 1, function(x) any(x=="")),]
   return (toJSON(ret))
 }
@@ -119,7 +120,8 @@ getUnique <- function(file="qryTable12.csv", colVal = "", colKey = "") {
   library(plyr)
   df <- read.csv(file)
   plyed <- ddply(df, c(colVal,colKey), head, 1)
-  ret <- data.frame("VALUE" = plyed[colVal], "KEY" = plyed[colKey])
+  #ret <- data.frame("VALUE" = plyed[colVal], "KEY" = plyed[colKey])
+  ret <- data.frame("id" = plyed[colKey], "name" = plyed[colVal])
   ret <- ret[!apply(ret, 1, function(x) any(x=="")),]
   ret[with(ret, order(ret[,1])), ]
   return (toJSON(ret))
