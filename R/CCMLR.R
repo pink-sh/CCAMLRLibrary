@@ -181,16 +181,18 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), ar
     aggr0 <- filter(aggr0, Area %in% area)
   }
   
-  aggr01 <- aggregate(aggr0$FishingDays, by=list(aggr0$SeasonYear, aggr0$MonthNm, aggr0$ScientificName, aggr0$TargetSpeciesCode), FUN=sum, na.rm=TRUE)
+  aggr01 <- aggregate(aggr0$FishingDays, by=list(aggr0$SeasonYear, aggr0$MonthNm, aggr0$ScientificName, aggr0$TargetSpeciesCode, aggr0$Area), FUN=sum, na.rm=TRUE)
   aggr01 <- transform(aggr01, Year = as.character(Group.1))
   aggr01 <- transform(aggr01, Month = as.character(Group.2))
   aggr01 <- transform(aggr01, ScientificName = as.character(Group.3))
   aggr01 <- transform(aggr01, SpeciesCode = as.character(Group.4))
+  aggr01 <- transform(aggr01, Area = as.character(Group.5))
   aggr01 <- transform(aggr01, FishingDays = as.numeric(x))
   aggr01$Group.1 = NULL
   aggr01$Group.2 = NULL
   aggr01$Group.3 = NULL
   aggr01$Group.4 = NULL
+  aggr01$Group.5 = NULL
   aggr01$x = NULL
   aggr01$monthNum <- match(aggr01$Month, month.name)
   aggr01 <- aggr01[apply(aggr01["monthNum"],1,function(z) !any(is.na(z))),]
