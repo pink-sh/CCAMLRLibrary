@@ -224,9 +224,9 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), ar
   aggr03$out <- paste(aggr03$Year, aggr03$monthNum, sep="/")
 
   if (chart == "Stacked") {
-    m1 <- mPlot(x = c("out"), y = species, type = "Bar", data = aggr03, stacked = "true", xLabelAngle = 65, pointSize='0')
+    m1 <- mPlot(x = c("out"), y = cspecies, type = "Bar", data = aggr03, stacked = "true", xLabelAngle = 65, pointSize='0')
   } else {
-    m1 <- mPlot(x = c("out"), y = species, type = chart, data = aggr03, xLabelAngle = 65, pointSize='0')
+    m1 <- mPlot(x = c("out"), y = cspecies, type = chart, data = aggr03, xLabelAngle = 65, pointSize='0')
   }
   m1$save('output.html', standalone = TRUE)
   
