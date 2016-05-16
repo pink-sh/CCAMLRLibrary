@@ -98,7 +98,11 @@ plotCatchEfforts <- function(start=1946, end=2016, file="QueryEffortsCatch.csv",
   myData <- read.csv(file)
   aggr0 <- filter(myData, SeasonYear >= start, SeasonYear <= end)
   aggr01 <- transform(aggr0, Mean = CatchWeight/FishingHours)
-  m1 <- mPlot(x = "SeasonYear", y = "Mean", type = chart, data = aggr01, stacked = "TRUE", xLabelAngle = 85)
+  if (chart == "Stacked") {
+     m1 <- mPlot(x = "SeasonYear", y = "Mean", type = "Bar", data = aggr01, stacked = "TRUE", xLabelAngle = 85, xLabels = 'year')
+  } else {
+   m1 <- mPlot(x = "SeasonYear", y = "Mean", type = chart, data = aggr01, xLabelAngle = 85, xLabels = 'year')
+  }
   m1$save('output.html', standalone = TRUE)
   json <- toJSON(aggr01, na = "null", pretty = FALSE)
   return (json)
