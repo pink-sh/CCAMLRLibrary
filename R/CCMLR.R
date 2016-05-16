@@ -153,7 +153,11 @@ catchByFishingMethods <- function(start=1946, end=2016, species=c(), gear=c(), a
     aggr01 <- aggr01[apply(aggr01["Tonnes"],1,function(z) !any(z==0)),]
   }
   json <- toJSON(aggr01)
-  m1 <- mPlot(x = "SpeciesCode", y = "Tonnes", type = chart, data = aggr01, stacked = "TRUE", xLabelAngle = 65)
+  if (chart == "Stacked") {
+    m1 <- mPlot(x = "SpeciesCode", y = "Tonnes", type = "Bar", data = aggr01, stacked = "TRUE", xLabelAngle = 65)
+  } else {
+    m1 <- mPlot(x = "SpeciesCode", y = "Tonnes", type = chart, data = aggr01, xLabelAngle = 65)
+  }
   m1$save('output.html', standalone = TRUE)
   return (json)
 }
