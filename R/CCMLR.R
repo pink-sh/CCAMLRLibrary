@@ -4,7 +4,9 @@ plotQuantitiesInTonnes <- function(species=c(), start=1946, end=2016, file="qryT
   library(rCharts)
   library(dplyr)
   library(jsonlite)
-  myData <- read.csv(file)
+  library(RCurl)
+  myCsv <- getURL(file)
+  myData <- read.csv(textConnection(myCsv))
   if (length(species > 0)) {
     reduced <- filter(myData, SpeciesCode %in% species)
   } else {
@@ -56,29 +58,31 @@ plotQuantitiesInTonnes <- function(species=c(), start=1946, end=2016, file="qryT
          var tuples = [];
          var YEAR = '';
          for (var key in row) {
-         	if (key != 'SeasonYear') {
-         		tuples.push([key, parseInt(row[key])]);
-         	} else {
-         		year = row[key]
-         	}
+         if (key != 'SeasonYear') {
+         tuples.push([key, parseInt(row[key])]);
+         } else {
+         year = row[key]
+         }
          }
          tuples.sort(function(a, b) {return b[1] - a[1]});
-		     var ret = [];
-		     ret.push('<div style=\"color: red;\">' + year + '</div>');
-		     for (var i = 0; i < tuples.length; i++) {
-		 	      if (i > 10) break;
-		 	      ret.push(tuples[i][0].replace('.', ' ') + ':' + tuples[i][1]);
-		     }
-		     return ret.join('<br />'); } !#")
+         var ret = [];
+         ret.push('<div style=\"color: red;\">' + year + '</div>');
+         for (var i = 0; i < tuples.length; i++) {
+         if (i > 10) break;
+         ret.push(tuples[i][0].replace('.', ' ') + ':' + tuples[i][1]);
+         }
+         return ret.join('<br />'); } !#")
   m1$save('output.html', standalone = TRUE)
   return (toJSON(OUT))
-}
+  }
 
 plotQuantitiesInTonnesByCountry <- function(start=1946, end=2016, file="qryTable03_1.csv", chart="Bar") {
   library(rCharts)
   library(dplyr)
   library(jsonlite)
-  myData <- read.csv(file)
+  library(RCurl)
+  myCsv <- getURL(file)
+  myData <- read.csv(textConnection(myCsv))
   aggr0 <- aggregate(myData$CatchWeight.t., by=list(SeasonYear=myData$SeasonYear, Country=myData$Country), FUN=sum)
   aggr01 <- transform(aggr0, SeasonYear = as.character(SeasonYear), CatchWeight.t. = as.numeric(x))
   aggr01$x <- NULL
@@ -99,9 +103,9 @@ plotCatchEfforts <- function(start=1946, end=2016, file="QueryEffortsCatch.csv",
   aggr0 <- filter(myData, SeasonYear >= start, SeasonYear <= end)
   aggr01 <- transform(aggr0, Mean = CatchWeight/FishingHours)
   if (chart == "Stacked") {
-     m1 <- mPlot(x = "SeasonYear", y = "Mean", type = "Bar", data = aggr01, stacked = "TRUE", xLabelAngle = 85, xLabels = 'year')
+    m1 <- mPlot(x = "SeasonYear", y = "Mean", type = "Bar", data = aggr01, stacked = "TRUE", xLabelAngle = 85, xLabels = 'year')
   } else {
-   m1 <- mPlot(x = "SeasonYear", y = "Mean", type = chart, data = aggr01, xLabelAngle = 85, xLabels = 'year')
+    m1 <- mPlot(x = "SeasonYear", y = "Mean", type = chart, data = aggr01, xLabelAngle = 85, xLabels = 'year')
   }
   m1$save('output.html', standalone = TRUE)
   json <- toJSON(aggr01, na = "null", pretty = FALSE)
@@ -111,7 +115,9 @@ plotCatchEfforts <- function(start=1946, end=2016, file="QueryEffortsCatch.csv",
 getSpecies <- function(file="qryTable02.csv") {
   library(jsonlite)
   library(plyr)
-  df <- read.csv(file)
+  library(RCurl)
+  myCsv <- getURL(file)
+  myData <- read.csv(textConnection(myCsv))
   plyed <- ddply(df, c("ScientificName","SpeciesCode"), head, 1)
   #ret <- data.frame("NAME" = plyed$ScientificName, "ALPHA" = plyed$SpeciesCode)
   ret <- data.frame("id" = plyed$SpeciesCode, "name" = plyed$ScientificName)
@@ -122,7 +128,9 @@ getSpecies <- function(file="qryTable02.csv") {
 getUnique <- function(file="qryTable12.csv", colVal = "", colKey = "") {
   library(jsonlite)
   library(plyr)
-  df <- read.csv(file)
+  library(RCurl)
+  myCsv <- getURL(file)
+  df <- read.csv(textConnection(myCsv))
   plyed <- ddply(df, c(colVal,colKey), head, 1)
   #ret <- data.frame("VALUE" = plyed[colVal], "KEY" = plyed[colKey])
   ret <- data.frame("id" = plyed[colKey], "name" = plyed[colVal])
@@ -135,7 +143,9 @@ catchByFishingMethods <- function(start=1946, end=2016, species=c(), gear=c(), a
   library(rCharts)
   library(dplyr)
   library(jsonlite)
-  myData <- read.csv(file)
+  library(RCurl)
+  myCsv <- getURL(file)
+  myData <- read.csv(textConnection(myCsv))
   aggr0 <- filter(myData, SeasonYear >= start, SeasonYear <= end)
   if (!vector.is.empty(species)) {
     aggr0 <- filter(aggr0, SpeciesCode %in% species)
@@ -170,8 +180,9 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), ar
   library(rCharts)
   library(dplyr)
   library(jsonlite)
-
-  myData <- read.csv(file)
+  library(RCurl)
+  myCsv <- getURL(file)
+  myData <- read.csv(textConnection(myCsv))
   aggr0 <- filter(myData, SeasonYear >= start, SeasonYear <= end)
   if (!vector.is.empty(species)) {
     aggr0 <- filter(aggr0, TargetSpeciesCode %in% species)
@@ -188,7 +199,7 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), ar
   if (!vector.is.empty(area)) {
     aggr0 <- filter(aggr0, Area %in% area)
   }
-  
+
   aggr01 <- aggregate(aggr0$FishingDays, by=list(aggr0$SeasonYear, aggr0$MonthNm, aggr0$ScientificName, aggr0$TargetSpeciesCode, aggr0$Area), FUN=sum, na.rm=TRUE)
   aggr01 <- transform(aggr01, Year = as.character(Group.1))
   aggr01 <- transform(aggr01, Month = as.character(Group.2))
@@ -237,6 +248,6 @@ FishingDays <- function(start=1946, end=2016, species=c(), gear=c(), asd=c(), ar
     m1 <- mPlot(x = c("out"), y = cspecies, type = chart, data = aggr03, xLabelAngle = 65, pointSize='0')
   }
   m1$save('output.html', standalone = TRUE)
-  
+
   return (json)
 }
