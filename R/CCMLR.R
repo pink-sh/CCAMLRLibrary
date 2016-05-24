@@ -119,10 +119,8 @@ getSpecies <- function(file="qryTable02.csv") {
   myCsv <- getURL(file)
   myData <- read.csv(textConnection(myCsv))
   plyed <- ddply(myData, c("ScientificName","SpeciesCode"), head, 1)
-  print(plyed)
   #ret <- data.frame("NAME" = plyed$ScientificName, "ALPHA" = plyed$SpeciesCode)
   ret <- data.frame("id" = plyed$SpeciesCode, "name" = plyed$ScientificName)
-  print(ret)
   ret <- ret[!apply(ret, 1, function(x) any(x=="")),]
   return (toJSON(ret))
 }
