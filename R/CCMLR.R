@@ -118,7 +118,7 @@ getSpecies <- function(file="qryTable02.csv") {
   library(RCurl)
   myCsv <- getURL(file)
   myData <- read.csv(textConnection(myCsv))
-  plyed <- ddply(df, c("ScientificName","SpeciesCode"), head, 1)
+  plyed <- ddply(myData, c("ScientificName","SpeciesCode"), head, 1)
   print(plyed)
   #ret <- data.frame("NAME" = plyed$ScientificName, "ALPHA" = plyed$SpeciesCode)
   ret <- data.frame("id" = plyed$SpeciesCode, "name" = plyed$ScientificName)
